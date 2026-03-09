@@ -17,21 +17,30 @@ export type Database = {
       users: {
         Row: {
           created_at: string
+          email: string
           id: string
-          is_onboarded: boolean
+          name: string
           onboarding_data: Json | null
+          profile_picture: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
+          email: string
           id: string
-          is_onboarded?: boolean
+          name: string
           onboarding_data?: Json | null
+          profile_picture?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
+          email?: string
           id?: string
-          is_onboarded?: boolean
+          name?: string
           onboarding_data?: Json | null
+          profile_picture?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

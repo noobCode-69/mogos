@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { makeRedirectUri } from "expo-auth-session";
+import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -55,13 +56,15 @@ async function signInWithGoogle() {
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   async function handleGooglePress() {
     setLoading(true);
     try {
       await signInWithGoogle();
-      await queryClient.invalidateQueries({ queryKey: ["auth"] });
+      await queryClient.refetchQueries({ queryKey: ["auth"] });
+      router.replace("/");
     } finally {
       setLoading(false);
     }
