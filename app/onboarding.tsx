@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
   Alert,
@@ -256,9 +257,9 @@ function MultiSelectInput({
 
 export default function Onboarding() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [saving, setSaving] = useState(false);
   const step = STEPS[currentStep];
   const progress = (currentStep + 1) / STEPS.length;
   const currentAnswer = answers[currentStep] || "";
@@ -271,43 +272,44 @@ export default function Onboarding() {
         ? !!currentAnswer
         : currentAnswer.length > 0 && !isNaN(Number(currentAnswer));
 
-  async function saveOnboarding() {
-    setSaving(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+  const { mutate: saveOnboarding, isPending: saving } = useMutation({
+    mutationFn: async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user");
 
-    const onboardingData = {
-      age: Number(answers[0]),
-      gender: answers[1],
-      current_weight: Number(answers[2]),
-      goal_weight: Number(answers[3]),
-      timeline_months: Number(answers[4]),
-      height: Number(answers[5]),
-      activity_level: answers[6],
-      training_split: answers[7],
-      training_frequency: answers[8],
-      experience_level: answers[9],
-      skin_type: answers[10],
-      skin_concerns: answers[11] ? answers[11].split("||") : [],
-      has_skincare_routine: answers[12] === "I follow a skincare routine",
-    };
+      const onboardingData = {
+        age: Number(answers[0]),
+        gender: answers[1],
+        current_weight: Number(answers[2]),
+        goal_weight: Number(answers[3]),
+        timeline_months: Number(answers[4]),
+        height: Number(answers[5]),
+        activity_level: answers[6],
+        training_split: answers[7],
+        training_frequency: answers[8],
+        experience_level: answers[9],
+        skin_type: answers[10],
+        skin_concerns: answers[11] ? answers[11].split("||") : [],
+        has_skincare_routine: answers[12] === "I follow a skincare routine",
+      };
 
-    const { error } = await supabase
-      .from("users")
-      .update({ onboarding_data: onboardingData })
-      .eq("id", user.id);
+      const { error } = await supabase
+        .from("users")
+        .update({ onboarding_data: onboardingData })
+        .eq("id", user.id);
 
-    setSaving(false);
-
-    if (error) {
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ["auth"] });
+      router.replace("/");
+    },
+    onError: () => {
       Alert.alert("Error", "Failed to save. Please try again.");
-      return;
-    }
-
-    await queryClient.invalidateQueries({ queryKey: ["auth"] });
-  }
+    },
+  });
 
   function handleNext() {
     if (!canContinue) return;
