@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Redirect } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../lib/supabase";
 
@@ -40,16 +40,6 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.heading}>Welcome {data.name}</Text>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={async () => {
-            await supabase.auth.signOut();
-            await queryClient.invalidateQueries({ queryKey: ["auth"] });
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -70,17 +60,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#000",
     lineHeight: 34,
-  },
-  logoutButton: {
-    marginTop: 24,
-    backgroundColor: "#F5F5F5",
-    paddingVertical: 14,
-    borderRadius: 16,
-    alignItems: "center",
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
   },
 });
