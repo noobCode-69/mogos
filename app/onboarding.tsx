@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type Step = {
   heading: string;
   description: string;
-  type: "number" | "select" | "multiselect";
+  type: "number" | "select" | "multiselect" | "text";
   unitToggle?: [string, string];
   options?: string[];
 };
@@ -131,6 +131,11 @@ const STEPS: Step[] = [
       "So we know whether to guide you from scratch or build on what you have.",
     type: "select",
     options: ["I don't have a skincare routine", "I follow a skincare routine"],
+  },
+  {
+    heading: "What should we call you?",
+    description: "This is how MogOS will address you throughout the app.",
+    type: "text",
   },
 ];
 
@@ -252,6 +257,30 @@ function MultiSelectInput({
   );
 }
 
+function NameInput({
+  value,
+  onChangeValue,
+}: {
+  value: string;
+  onChangeValue: (text: string) => void;
+}) {
+  return (
+    <View style={styles.numberInputArea}>
+      <TextInput
+        style={styles.nameInput}
+        value={value}
+        onChangeText={onChangeValue}
+        placeholder="Your name"
+        placeholderTextColor="#bbb"
+        autoFocus
+        autoCapitalize="words"
+        autoCorrect={false}
+      />
+      <View style={styles.inputUnderline} />
+    </View>
+  );
+}
+
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -264,7 +293,9 @@ export default function Onboarding() {
       ? currentAnswer.length > 0
       : step.type === "select"
         ? !!currentAnswer
-        : currentAnswer.length > 0 && !isNaN(Number(currentAnswer));
+        : step.type === "text"
+          ? currentAnswer.trim().length > 0
+          : currentAnswer.length > 0 && !isNaN(Number(currentAnswer));
 
   function handleNext() {
     if (!canContinue) return;
@@ -298,7 +329,15 @@ export default function Onboarding() {
           <Text style={styles.heading}>{step.heading}</Text>
           <Text style={styles.description}>{step.description}</Text>
 
-          {step.type === "number" ? (
+          {step.type === "text" ? (
+            <NameInput
+              key={currentStep}
+              value={currentAnswer}
+              onChangeValue={(text) =>
+                setAnswers({ ...answers, [currentStep]: text })
+              }
+            />
+          ) : step.type === "number" ? (
             <NumberInput
               key={currentStep}
               value={currentAnswer}
@@ -421,6 +460,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#000",
     flex: 1,
+    paddingVertical: 8,
+  },
+  nameInput: {
+    fontSize: 32,
+    fontWeight: "600",
+    color: "#000",
     paddingVertical: 8,
   },
   unitToggle: {
