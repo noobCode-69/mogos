@@ -296,7 +296,7 @@ export default function Onboarding() {
 
     const { error } = await supabase
       .from("users")
-      .update({ onboarding_data: onboardingData, is_onboarded: true })
+      .update({ onboarding_data: onboardingData })
       .eq("id", user.id);
 
     setSaving(false);

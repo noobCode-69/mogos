@@ -38,9 +38,17 @@ async function signInWithGoogle() {
     });
 
     if (sessionData.user) {
-      await supabase
-        .from("users")
-        .upsert({ id: sessionData.user.id }, { onConflict: "id" });
+      const user = sessionData.user;
+      const meta = user.user_metadata;
+      await supabase.from("users").upsert(
+        {
+          id: user.id,
+          name: meta.full_name ?? meta.name,
+          email: user.email!,
+          profile_picture: meta.avatar_url ?? null,
+        },
+        { onConflict: "id" },
+      );
     }
   }
 }
