@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Redirect } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,7 +20,6 @@ export async function fetchUser() {
 }
 
 export default function Index() {
-  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["auth"],
     queryFn: fetchUser,
