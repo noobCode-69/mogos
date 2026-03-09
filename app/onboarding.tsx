@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,11 +13,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "../lib/supabase";
 
 type Step = {
   heading: string;
   description: string;
-  type: "number" | "select" | "multiselect" | "text";
+  type: "number" | "select" | "multiselect";
   unitToggle?: [string, string];
   options?: string[];
 };
@@ -131,11 +133,6 @@ const STEPS: Step[] = [
       "So we know whether to guide you from scratch or build on what you have.",
     type: "select",
     options: ["I don't have a skincare routine", "I follow a skincare routine"],
-  },
-  {
-    heading: "What should we call you?",
-    description: "This is how MogOS will address you throughout the app.",
-    type: "text",
   },
 ];
 
@@ -257,52 +254,67 @@ function MultiSelectInput({
   );
 }
 
-function NameInput({
-  value,
-  onChangeValue,
-}: {
-  value: string;
-  onChangeValue: (text: string) => void;
-}) {
-  return (
-    <View style={styles.numberInputArea}>
-      <TextInput
-        style={styles.nameInput}
-        value={value}
-        onChangeText={onChangeValue}
-        placeholder="Your name"
-        placeholderTextColor="#bbb"
-        autoFocus
-        autoCapitalize="words"
-        autoCorrect={false}
-      />
-      <View style={styles.inputUnderline} />
-    </View>
-  );
-}
-
 export default function Onboarding() {
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [saving, setSaving] = useState(false);
   const step = STEPS[currentStep];
   const progress = (currentStep + 1) / STEPS.length;
   const currentAnswer = answers[currentStep] || "";
+  const isLastStep = currentStep === STEPS.length - 1;
 
   const canContinue =
     step.type === "multiselect"
       ? currentAnswer.length > 0
       : step.type === "select"
         ? !!currentAnswer
-        : step.type === "text"
-          ? currentAnswer.trim().length > 0
-          : currentAnswer.length > 0 && !isNaN(Number(currentAnswer));
+        : currentAnswer.length > 0 && !isNaN(Number(currentAnswer));
+
+  async function saveOnboarding() {
+    setSaving(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const onboardingData = {
+      age: Number(answers[0]),
+      gender: answers[1],
+      current_weight: Number(answers[2]),
+      goal_weight: Number(answers[3]),
+      timeline_months: Number(answers[4]),
+      height: Number(answers[5]),
+      activity_level: answers[6],
+      training_split: answers[7],
+      training_frequency: answers[8],
+      experience_level: answers[9],
+      skin_type: answers[10],
+      skin_concerns: answers[11] ? answers[11].split("||") : [],
+      has_skincare_routine: answers[12] === "I follow a skincare routine",
+    };
+
+    const { error } = await supabase
+      .from("users")
+      .update({ onboarding_data: onboardingData, is_onboarded: true })
+      .eq("id", user.id);
+
+    setSaving(false);
+
+    if (error) {
+      Alert.alert("Error", "Failed to save. Please try again.");
+      return;
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ["auth"] });
+  }
 
   function handleNext() {
     if (!canContinue) return;
-    if (currentStep < STEPS.length - 1) {
+    if (!isLastStep) {
       setCurrentStep(currentStep + 1);
     } else {
-      router.replace("/");
+      saveOnboarding();
     }
   }
 
@@ -329,15 +341,7 @@ export default function Onboarding() {
           <Text style={styles.heading}>{step.heading}</Text>
           <Text style={styles.description}>{step.description}</Text>
 
-          {step.type === "text" ? (
-            <NameInput
-              key={currentStep}
-              value={currentAnswer}
-              onChangeValue={(text) =>
-                setAnswers({ ...answers, [currentStep]: text })
-              }
-            />
-          ) : step.type === "number" ? (
+          {step.type === "number" ? (
             <NumberInput
               key={currentStep}
               value={currentAnswer}
@@ -385,19 +389,19 @@ export default function Onboarding() {
           <TouchableOpacity
             style={[
               styles.continueButton,
-              !canContinue && styles.continueButtonDisabled,
+              (!canContinue || saving) && styles.continueButtonDisabled,
             ]}
             onPress={handleNext}
-            disabled={!canContinue}
+            disabled={!canContinue || saving}
             activeOpacity={0.8}
           >
             <Text
               style={[
                 styles.continueText,
-                !canContinue && styles.continueTextDisabled,
+                (!canContinue || saving) && styles.continueTextDisabled,
               ]}
             >
-              Continue
+              {saving ? "Loading..." : "Continue"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -460,12 +464,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#000",
     flex: 1,
-    paddingVertical: 8,
-  },
-  nameInput: {
-    fontSize: 32,
-    fontWeight: "600",
-    color: "#000",
     paddingVertical: 8,
   },
   unitToggle: {
