@@ -4,22 +4,7 @@ import { Redirect, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
-import { supabase } from "../lib/supabase";
-
-export async function fetchUser() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const id = session?.user?.id;
-  if (!id) return null;
-  const { data: user } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  return user;
-}
+import { fetchUser } from "../lib/fetchUser";
 
 export default function Index() {
   const router = useRouter();

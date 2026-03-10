@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { Pressable, StyleSheet, View } from "react-native";
-import { fetchUser } from "../app/index";
+import { fetchUser } from "../lib/fetchUser";
 import ProfileButton from "./ProfileButton";
 
 interface HeaderProps {
