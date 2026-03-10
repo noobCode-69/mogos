@@ -2,7 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, useRouter } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../lib/supabase";
 
@@ -81,6 +88,8 @@ export default function Index() {
             />
           </Pressable>
         </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}></ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -107,7 +116,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: "#555",
-    marginTop: 4,
+    marginTop: 3,
   },
   notificationButton: {
     width: 40,
