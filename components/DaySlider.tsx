@@ -100,7 +100,7 @@ export default function DaySlider({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 25,
   },
   dayItem: {
     width: 48,

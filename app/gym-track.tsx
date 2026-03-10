@@ -1,12 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DaySlider from "../components/DaySlider";
 import Header from "../components/Header";
 
 export default function GymTrack() {
   const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <LinearGradient
@@ -32,6 +35,7 @@ export default function GymTrack() {
             </Pressable>
           }
         />
+        <DaySlider selectedDate={selectedDate} onSelectDate={setSelectedDate} />
       </SafeAreaView>
     </LinearGradient>
   );
