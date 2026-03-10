@@ -2,8 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, useRouter } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProfileButton from "../components/ProfileButton";
 import { supabase } from "../lib/supabase";
 
 export async function fetchUser() {
@@ -66,22 +67,21 @@ export default function Index() {
           >
             <Ionicons name="notifications-outline" size={20} color="#000" />
           </Pressable>
-          <Pressable
-            onPress={() => router.push("/profile")}
-            style={({ pressed }) => [
-              styles.profileButton,
-              {
-                opacity: pressed ? 0.7 : 1,
-                transform: [{ scale: pressed ? 0.9 : 1 }],
-              },
-            ]}
-          >
-            <Image
-              source={{ uri: data.profile_picture as string }}
-              style={styles.avatar}
-            />
-          </Pressable>
+          <ProfileButton profilePicture={data.profile_picture as string} />
         </View>
+
+        <Pressable
+          onPress={() => router.push("/gym-track")}
+          style={({ pressed }) => [
+            styles.gymButton,
+            {
+              opacity: pressed ? 0.7 : 1,
+              transform: [{ scale: pressed ? 0.95 : 1 }],
+            },
+          ]}
+        >
+          <Text style={styles.gymButtonText}>Gym Track</Text>
+        </Pressable>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -119,23 +119,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
-  profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10000000,
-    justifyContent: "center",
+  gymButton: {
+    backgroundColor: "#c11c84",
+    borderRadius: 12,
+    paddingVertical: 14,
     alignItems: "center",
-    overflow: "hidden",
+    marginTop: 30,
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 100000,
-  },
-  selectedDateText: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginTop: 50,
-    textAlign: "center",
+  gymButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

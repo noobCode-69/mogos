@@ -8,6 +8,7 @@ function AuthGate() {
     <Stack
       screenOptions={{
         headerShown: false,
+        animation: "none",
       }}
     />
   );
