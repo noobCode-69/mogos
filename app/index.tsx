@@ -1,10 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProfileButton from "../components/ProfileButton";
+import Header from "../components/Header";
 import { supabase } from "../lib/supabase";
 
 export async function fetchUser() {
@@ -48,27 +47,16 @@ export default function Index() {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.topBar}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.greeting}>
-              Hello, {data.name?.split(" ")[0]}
-            </Text>
-            <Text style={styles.subtitle}>Keep Mogging!</Text>
-          </View>
-          <Pressable
-            onPress={() => {}}
-            style={({ pressed }) => [
-              styles.notificationButton,
-              {
-                opacity: pressed ? 0.7 : 1,
-                transform: [{ scale: pressed ? 0.9 : 1 }],
-              },
-            ]}
-          >
-            <Ionicons name="notifications-outline" size={20} color="#000" />
-          </Pressable>
-          <ProfileButton profilePicture={data.profile_picture as string} />
-        </View>
+        <Header
+          left={
+            <View>
+              <Text style={styles.greeting}>
+                Hello, {data.name?.split(" ")[0]}
+              </Text>
+              <Text style={styles.subtitle}>Keep Mogging!</Text>
+            </View>
+          }
+        />
 
         <Pressable
           onPress={() => router.push("/gym-track")}
@@ -95,11 +83,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
   },
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 15,
-  },
   greeting: {
     fontSize: 21,
     fontWeight: "800",
@@ -109,15 +92,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "grey",
     marginTop: 3,
-  },
-  notificationButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10000000,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
   },
   gymButton: {
     backgroundColor: "#c11c84",

@@ -11,6 +11,7 @@ export default function ProfileButton({ profilePicture }: ProfileButtonProps) {
   return (
     <Pressable
       onPress={() => router.push("/profile")}
+      hitSlop={10}
       style={({ pressed }) => [
         styles.button,
         {

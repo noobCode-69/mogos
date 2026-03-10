@@ -1,15 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProfileButton from "../components/ProfileButton";
-import { fetchUser } from "./index";
+import Header from "../components/Header";
 
 export default function GymTrack() {
-  const { data } = useQuery({
-    queryKey: ["auth"],
-    queryFn: fetchUser,
-  });
+  const router = useRouter();
 
   return (
     <LinearGradient
@@ -19,12 +16,22 @@ export default function GymTrack() {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.topBar}>
-          <View style={{ flex: 1 }} />
-          {data?.profile_picture && (
-            <ProfileButton profilePicture={data.profile_picture as string} />
-          )}
-        </View>
+        <Header
+          left={
+            <Pressable
+              onPress={() => router.back()}
+              style={({ pressed }) => [
+                styles.backButton,
+                {
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.9 : 1 }],
+                },
+              ]}
+            >
+              <Ionicons name="chevron-back" size={20} color="#000" />
+            </Pressable>
+          }
+        />
       </SafeAreaView>
     </LinearGradient>
   );
@@ -38,9 +45,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
   },
-  topBar: {
-    flexDirection: "row",
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 10000000,
+    backgroundColor: "#fff",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 15,
   },
 });
