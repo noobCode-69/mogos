@@ -1,13 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MuscleMap from "../../components/MuscleMap";
 import { Tables } from "../../lib/database.types";
@@ -80,7 +74,6 @@ export default function ExerciseDetail() {
               ))}
             </View>
           )}
-
         </ScrollView>
 
         <Pressable
@@ -136,18 +129,18 @@ const styles = StyleSheet.create({
   pillsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
   },
   pill: {
-    borderRadius: 8,
+    borderRadius: 1000,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "#f5f0f3",
+    backgroundColor: "white",
   },
   pillText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600",
-    color: "#6b5a63",
+    color: "grey",
     textTransform: "capitalize",
   },
   section: {
