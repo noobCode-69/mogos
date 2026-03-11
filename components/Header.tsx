@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { IconButton } from "react-native-paper";
 import { fetchUser } from "../lib/fetchUser";
 import ProfileButton from "./ProfileButton";
 
@@ -16,19 +16,14 @@ export default function Header({ left }: HeaderProps) {
 
   return (
     <View style={styles.topBar}>
-      <View style={{ flex: 1 }}>{left}</View>
-      <Pressable
+      <View style={styles.leftSection}>{left}</View>
+      <IconButton
+        icon="bell-outline"
+        size={20}
         onPress={() => {}}
-        style={({ pressed }) => [
-          styles.notificationButton,
-          {
-            opacity: pressed ? 0.7 : 1,
-            transform: [{ scale: pressed ? 0.9 : 1 }],
-          },
-        ]}
-      >
-        <Ionicons name="notifications-outline" size={20} color="#000" />
-      </Pressable>
+        style={styles.notificationButton}
+        iconColor="#000"
+      />
       {data?.profile_picture && (
         <ProfileButton profilePicture={data.profile_picture as string} />
       )}
@@ -42,13 +37,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 60,
   },
+  leftSection: {
+    flex: 1,
+  },
   notificationButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10000000,
     backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
+    borderRadius: 10000000,
+    marginRight: 2,
   },
 });

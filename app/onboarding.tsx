@@ -8,11 +8,17 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
+import {
+  Button,
+  Chip,
+  IconButton,
+  ProgressBar,
+  Text,
+  TextInput as PaperInput,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../lib/supabase";
 
@@ -168,10 +174,17 @@ function NumberInput({
           autoFocus
         />
         {unitToggle && (
-          <TouchableOpacity style={styles.unitToggle} onPress={toggleUnit}>
-            <Text style={styles.unitText}>{unit}</Text>
-            <Ionicons name="chevron-down" size={16} color="#666" />
-          </TouchableOpacity>
+          <Chip
+            mode="flat"
+            onPress={toggleUnit}
+            style={styles.unitChip}
+            textStyle={styles.unitChipText}
+            icon={() => (
+              <Ionicons name="chevron-down" size={14} color="#666" />
+            )}
+          >
+            {unit}
+          </Chip>
         )}
       </View>
       <View style={styles.inputUnderline} />
@@ -190,27 +203,21 @@ function SelectInput({
 }) {
   return (
     <View style={styles.optionsArea}>
-      {options.map((option, index) => {
+      {options.map((option) => {
         const isSelected = selected === option;
         return (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.optionButton,
-              isSelected && styles.optionButtonSelected,
-            ]}
+          <Button
+            key={option}
+            mode={isSelected ? "contained" : "elevated"}
             onPress={() => onSelect(option)}
-            activeOpacity={0.7}
+            buttonColor={isSelected ? "#000" : "#F5F5F5"}
+            textColor={isSelected ? "#fff" : "#000"}
+            contentStyle={styles.optionContent}
+            labelStyle={styles.optionLabel}
+            style={styles.optionButton}
           >
-            <Text
-              style={[
-                styles.optionText,
-                isSelected && styles.optionTextSelected,
-              ]}
-            >
-              {option}
-            </Text>
-          </TouchableOpacity>
+            {option}
+          </Button>
         );
       })}
     </View>
@@ -228,27 +235,21 @@ function MultiSelectInput({
 }) {
   return (
     <View style={styles.optionsArea}>
-      {options.map((option, index) => {
+      {options.map((option) => {
         const isSelected = selected.includes(option);
         return (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.optionButton,
-              isSelected && styles.optionButtonSelected,
-            ]}
+          <Button
+            key={option}
+            mode={isSelected ? "contained" : "elevated"}
             onPress={() => onToggle(option)}
-            activeOpacity={0.7}
+            buttonColor={isSelected ? "#000" : "#F5F5F5"}
+            textColor={isSelected ? "#fff" : "#000"}
+            contentStyle={styles.optionContent}
+            labelStyle={styles.optionLabel}
+            style={styles.optionButton}
           >
-            <Text
-              style={[
-                styles.optionText,
-                isSelected && styles.optionTextSelected,
-              ]}
-            >
-              {option}
-            </Text>
-          </TouchableOpacity>
+            {option}
+          </Button>
         );
       })}
     </View>
@@ -327,11 +328,11 @@ export default function Onboarding() {
         style={styles.flex}
       >
         <View style={styles.header}>
-          <View style={styles.progressBarContainer}>
-            <View
-              style={[styles.progressBar, { width: `${progress * 100}%` }]}
-            />
-          </View>
+          <ProgressBar
+            progress={progress}
+            color="#000"
+            style={styles.progressBar}
+          />
         </View>
 
         <ScrollView
@@ -340,8 +341,12 @@ export default function Onboarding() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.heading}>{step.heading}</Text>
-          <Text style={styles.description}>{step.description}</Text>
+          <Text variant="headlineLarge" style={styles.heading}>
+            {step.heading}
+          </Text>
+          <Text variant="bodyLarge" style={styles.description}>
+            {step.description}
+          </Text>
 
           {step.type === "number" ? (
             <NumberInput
@@ -379,33 +384,29 @@ export default function Onboarding() {
 
         <View style={styles.footer}>
           {currentStep > 0 && (
-            <TouchableOpacity
-              style={styles.prevButton}
+            <IconButton
+              icon="arrow-left"
+              mode="outlined"
+              size={22}
               onPress={() => setCurrentStep(currentStep - 1)}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="arrow-back" size={22} color="#1A1A2E" />
-            </TouchableOpacity>
+              style={styles.prevButton}
+              iconColor="#1A1A2E"
+            />
           )}
 
-          <TouchableOpacity
-            style={[
-              styles.continueButton,
-              (!canContinue || saving) && styles.continueButtonDisabled,
-            ]}
+          <Button
+            mode="contained"
             onPress={handleNext}
             disabled={!canContinue || saving}
-            activeOpacity={0.8}
+            loading={saving}
+            buttonColor="#1A1A2E"
+            textColor="#fff"
+            contentStyle={styles.continueContent}
+            labelStyle={styles.continueLabel}
+            style={styles.continueButton}
           >
-            <Text
-              style={[
-                styles.continueText,
-                (!canContinue || saving) && styles.continueTextDisabled,
-              ]}
-            >
-              {saving ? "Loading..." : "Continue"}
-            </Text>
-          </TouchableOpacity>
+            {saving ? "Loading..." : "Continue"}
+          </Button>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -425,15 +426,10 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
   },
-  progressBarContainer: {
-    height: 4,
-    backgroundColor: "#E8E8E8",
-    borderRadius: 2,
-  },
   progressBar: {
     height: 4,
-    backgroundColor: "#000",
     borderRadius: 2,
+    backgroundColor: "#E8E8E8",
   },
   content: {
     paddingHorizontal: 24,
@@ -441,16 +437,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   heading: {
-    fontSize: 28,
     fontWeight: "700",
     color: "#000",
-    lineHeight: 34,
     marginBottom: 12,
   },
   description: {
-    fontSize: 16,
     color: "#666",
-    lineHeight: 22,
     marginBottom: 40,
   },
   numberInputArea: {
@@ -468,16 +460,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
   },
-  unitToggle: {
-    flexDirection: "row",
-    alignItems: "center",
+  unitChip: {
     backgroundColor: "#F2F2F2",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
     borderRadius: 20,
-    gap: 4,
   },
-  unitText: {
+  unitChipText: {
     fontSize: 16,
     fontWeight: "600",
     color: "#333",
@@ -491,22 +478,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optionButton: {
-    paddingVertical: 18,
-    paddingHorizontal: 20,
     borderRadius: 16,
-    backgroundColor: "#F5F5F5",
-    alignItems: "center",
+    elevation: 0,
   },
-  optionButtonSelected: {
-    backgroundColor: "#000",
+  optionContent: {
+    paddingVertical: 10,
   },
-  optionText: {
+  optionLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
-  },
-  optionTextSelected: {
-    color: "#fff",
   },
   footer: {
     flexDirection: "row",
@@ -516,31 +496,21 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   prevButton: {
-    width: 72,
-    paddingVertical: 18,
+    width: 56,
+    height: 56,
     borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1.5,
     borderColor: "#1A1A2E",
-    backgroundColor: "transparent",
+    borderWidth: 1.5,
   },
   continueButton: {
     flex: 1,
-    backgroundColor: "#1A1A2E",
-    paddingVertical: 18,
     borderRadius: 16,
-    alignItems: "center",
   },
-  continueButtonDisabled: {
-    backgroundColor: "#E0E0E0",
+  continueContent: {
+    paddingVertical: 10,
   },
-  continueText: {
-    color: "#fff",
+  continueLabel: {
     fontSize: 17,
     fontWeight: "700",
-  },
-  continueTextDisabled: {
-    color: "#999",
   },
 });

@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import { fetchUser } from "../lib/fetchUser";
@@ -35,26 +36,27 @@ export default function Index() {
         <Header
           left={
             <View>
-              <Text style={styles.greeting}>
+              <Text variant="titleLarge" style={styles.greeting}>
                 Hello, {data.name?.split(" ")[0]}
               </Text>
-              <Text style={styles.subtitle}>Keep Mogging!</Text>
+              <Text variant="bodyMedium" style={styles.subtitle}>
+                Keep Mogging!
+              </Text>
             </View>
           }
         />
 
-        <Pressable
+        <Button
+          mode="contained"
           onPress={() => router.push("/gym-track")}
-          style={({ pressed }) => [
-            styles.gymButton,
-            {
-              opacity: pressed ? 0.7 : 1,
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-            },
-          ]}
+          buttonColor="#c11c84"
+          textColor="#fff"
+          contentStyle={styles.gymButtonContent}
+          labelStyle={styles.gymButtonLabel}
+          style={styles.gymButton}
         >
-          <Text style={styles.gymButtonText}>Gym Track</Text>
-        </Pressable>
+          Gym Track
+        </Button>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -69,24 +71,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   greeting: {
-    fontSize: 21,
     fontWeight: "800",
     color: "#000",
   },
   subtitle: {
-    fontSize: 14,
     color: "grey",
     marginTop: 3,
   },
   gymButton: {
-    backgroundColor: "#c11c84",
     borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: "center",
     marginTop: 30,
   },
-  gymButtonText: {
-    color: "#fff",
+  gymButtonContent: {
+    paddingVertical: 6,
+  },
+  gymButtonLabel: {
     fontSize: 16,
     fontWeight: "700",
   },

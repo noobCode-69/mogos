@@ -1,7 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { FAB, IconButton } from "react-native-paper";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -22,33 +22,23 @@ export default function GymTrack() {
       <SafeAreaView style={styles.safeArea}>
         <Header
           left={
-            <Pressable
+            <IconButton
+              icon="chevron-left"
+              size={20}
               onPress={() => router.back()}
-              style={({ pressed }) => [
-                styles.backButton,
-                {
-                  opacity: pressed ? 0.7 : 1,
-                  transform: [{ scale: pressed ? 0.9 : 1 }],
-                },
-              ]}
-            >
-              <Ionicons name="chevron-back" size={20} color="#000" />
-            </Pressable>
+              style={styles.backButton}
+              iconColor="#000"
+            />
           }
         />
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.addButton,
-            {
-              bottom: insets.bottom + 16,
-              opacity: pressed ? 0.85 : 1,
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-            },
-          ]}
-        >
-          <Ionicons name="add" size={25} color="#fff" />
-        </Pressable>
+        <FAB
+          icon="plus"
+          onPress={() => {}}
+          style={[styles.fab, { bottom: insets.bottom + 16 }]}
+          color="#fff"
+          customSize={50}
+        />
       </SafeAreaView>
     </LinearGradient>
   );
@@ -62,30 +52,19 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
   },
-  addButton: {
+  backButton: {
+    backgroundColor: "#fff",
+    borderRadius: 10000000,
+  },
+  fab: {
     position: "absolute",
     right: 20,
-    width: 50,
-    height: 50,
-    borderRadius: 30,
     backgroundColor: "#c11c84",
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 30,
     shadowColor: "#7d1254",
     shadowOpacity: 0.22,
     shadowRadius: 14,
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
+    shadowOffset: { width: 0, height: 8 },
     elevation: 8,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10000000,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

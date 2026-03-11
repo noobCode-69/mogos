@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { IconButton, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
@@ -8,11 +9,19 @@ export default function Profile() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Pressable onPress={() => router.back()}>
-          <Text style={styles.back}>← Back</Text>
-        </Pressable>
-        <Text style={styles.heading}>Profile</Text>
-        <Text style={styles.placeholder}>Profile page coming soon.</Text>
+        <IconButton
+          icon="arrow-left"
+          size={22}
+          onPress={() => router.back()}
+          style={styles.backButton}
+          iconColor="#666"
+        />
+        <Text variant="headlineLarge" style={styles.heading}>
+          Profile
+        </Text>
+        <Text variant="bodyLarge" style={styles.placeholder}>
+          Profile page coming soon.
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -26,21 +35,16 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 24,
   },
-  back: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 16,
+  backButton: {
+    marginLeft: -8,
   },
   heading: {
-    fontSize: 28,
     fontWeight: "700",
     color: "#000",
     marginBottom: 12,
   },
   placeholder: {
-    fontSize: 16,
     color: "#888",
   },
 });
