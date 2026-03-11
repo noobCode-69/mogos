@@ -38,7 +38,6 @@ export default function GymTrack() {
         />
 
         <Pressable
-          onPress={() => router.push("/add-workout")}
           style={({ pressed }) => [
             styles.addButton,
             {
