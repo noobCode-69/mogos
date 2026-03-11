@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -14,17 +15,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDebounce } from "../hooks/useDebounce";
+import { Tables } from "../lib/database.types";
 import { supabase } from "../lib/supabase";
 
-type Exercise = {
-  id: number;
-  name: string;
-  muscle_hit: string[];
-  images: string[];
-};
+type Exercise = Tables<"exercises">;
 
 const fetchExercises = async (search: string) => {
-  let query = supabase.from("exercises").select("*").order("name").limit(50);
+  let query = supabase.from("exercises").select("*").order("name").limit(25);
 
   if (search.trim()) {
     query = query.ilike("name", `%${search.trim()}%`);
@@ -32,7 +29,7 @@ const fetchExercises = async (search: string) => {
 
   const { data, error } = await query;
   if (error) throw error;
-  return data as Exercise[];
+  return data;
 };
 
 export default function AddWorkout() {
@@ -47,13 +44,31 @@ export default function AddWorkout() {
 
   const renderExercise = ({ item }: { item: Exercise }) => (
     <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/exercise/[id]",
+          params: { id: item.id, data: JSON.stringify(item) },
+        })
+      }
       style={({ pressed }) => [
         styles.exerciseItem,
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
-      <Text style={styles.exerciseName}>{item.name}</Text>
-      <Text style={styles.muscleTag}>{item.muscle_hit.join(", ")}</Text>
+      {item.image ? (
+        <Image
+          source={{ uri: item.image }}
+          autoplay={false}
+          style={styles.exerciseImage}
+        />
+      ) : (
+        <View style={[styles.exerciseImage, styles.imagePlaceholder]}>
+          <Ionicons name="barbell-outline" size={28} color="#ccc" />
+        </View>
+      )}
+      <Text style={styles.exerciseName} numberOfLines={1}>
+        {item.name}
+      </Text>
     </Pressable>
   );
 
@@ -95,16 +110,19 @@ export default function AddWorkout() {
             style={{ marginTop: 40 }}
           />
         ) : (
-          <FlatList
-            data={exercises}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderExercise}
-            contentContainerStyle={styles.list}
-            keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>No exercises found</Text>
-            }
-          />
+          <View style={styles.listWrapper}>
+            <FlatList
+              data={exercises}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderExercise}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              ListEmptyComponent={
+                <Text style={styles.emptyText}>No exercises found</Text>
+              }
+            />
+          </View>
         )}
       </SafeAreaView>
     </LinearGradient>
@@ -142,24 +160,41 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#25141f",
   },
+  listWrapper: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
   list: {
     paddingBottom: 40,
   },
   exerciseItem: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 8,
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  exerciseImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
+  imagePlaceholder: {
+    backgroundColor: "#f5f0f3",
+    justifyContent: "center",
+    alignItems: "center",
   },
   exerciseName: {
-    fontSize: 15,
-    fontWeight: "600",
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "700",
     color: "#25141f",
-  },
-  muscleTag: {
-    fontSize: 13,
-    color: "#8d7b87",
-    marginTop: 4,
   },
   emptyText: {
     textAlign: "center",
