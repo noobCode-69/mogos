@@ -1,0 +1,78 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function AddWorkout() {
+  const router = useRouter();
+  const [searchText, setSearchText] = useState("");
+
+  return (
+    <LinearGradient
+      colors={["#fdb8db", "#F0F3F4"]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.headerRow}>
+          <Pressable
+            onPress={() => router.back()}
+            style={({ pressed }) => [
+              styles.closeButton,
+              {
+                opacity: pressed ? 0.7 : 1,
+                transform: [{ scale: pressed ? 0.9 : 1 }],
+              },
+            ]}
+          >
+            <Ionicons name="chevron-back" size={20} color="#000" />
+          </Pressable>
+          <TextInput
+            autoFocus
+            placeholder="Search exercises"
+            placeholderTextColor="#8d7b87"
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.searchInput}
+          />
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 18,
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 10000000,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchInput: {
+    flex: 1,
+    height: 44,
+    borderRadius: 999,
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: "#25141f",
+  },
+});

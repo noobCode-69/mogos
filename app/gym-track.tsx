@@ -1,15 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import DaySlider from "../components/DaySlider";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import Header from "../components/Header";
 
 export default function GymTrack() {
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const insets = useSafeAreaInsets();
 
   return (
     <LinearGradient
@@ -35,7 +36,20 @@ export default function GymTrack() {
             </Pressable>
           }
         />
-        <DaySlider selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+
+        <Pressable
+          onPress={() => router.push("/add-workout")}
+          style={({ pressed }) => [
+            styles.addButton,
+            {
+              bottom: insets.bottom + 16,
+              opacity: pressed ? 0.85 : 1,
+              transform: [{ scale: pressed ? 0.95 : 1 }],
+            },
+          ]}
+        >
+          <Ionicons name="add" size={25} color="#fff" />
+        </Pressable>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -48,6 +62,24 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     paddingHorizontal: 15,
+  },
+  addButton: {
+    position: "absolute",
+    right: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: "#c11c84",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#7d1254",
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    elevation: 8,
   },
   backButton: {
     width: 40,
