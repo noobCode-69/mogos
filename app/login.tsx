@@ -4,7 +4,8 @@ import { makeRedirectUri } from "expo-auth-session";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../lib/supabase";
 const redirectTo = makeRedirectUri();
@@ -75,30 +76,25 @@ export default function Login() {
       <View style={styles.graphicPlaceholder} />
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.googleButton, loading && styles.googleButtonLoading]}
-          activeOpacity={0.8}
+        <Button
+          mode="contained"
           onPress={handleGooglePress}
+          loading={loading}
           disabled={loading}
+          icon={({ size, color }) => (
+            <Ionicons name="logo-google" size={size} color={color} />
+          )}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonLabel}
+          style={styles.googleButton}
         >
-          <Ionicons
-            name="logo-google"
-            size={18}
-            color={loading ? "#999" : "#000"}
-          />
-          <Text
-            style={[
-              styles.googleButtonText,
-              loading && styles.googleButtonTextLoading,
-            ]}
-          >
-            {loading ? "Signing in..." : "Continue with Google"}
-          </Text>
-        </TouchableOpacity>
+          {loading ? "Signing in..." : "Continue with Google"}
+        </Button>
 
-        <Text style={styles.termsText}>
+        <Text variant="bodySmall" style={styles.termsText}>
           By continuing, you agree to our{" "}
           <Text
+            variant="bodySmall"
             style={styles.termsLink}
             onPress={() =>
               WebBrowser.openBrowserAsync("https://example.com/terms")
@@ -116,14 +112,10 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   graphicPlaceholder: {
     flex: 1,
     margin: 24,
-    borderWidth: 1.5,
-    borderColor: "#000",
-    borderRadius: 16,
   },
   footer: {
     paddingHorizontal: 24,
@@ -131,27 +123,16 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   googleButton: {
-    backgroundColor: "#F5F5F5",
-    paddingVertical: 18,
     borderRadius: 16,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 10,
   },
-  googleButtonText: {
-    color: "#000",
+  buttonContent: {
+    paddingVertical: 10,
+  },
+  buttonLabel: {
     fontSize: 17,
     fontWeight: "700",
   },
-  googleButtonLoading: {
-    backgroundColor: "#E8E8E8",
-  },
-  googleButtonTextLoading: {
-    color: "#999",
-  },
   termsText: {
-    fontSize: 12,
     color: "#999",
     textAlign: "center",
     lineHeight: 18,
