@@ -16,22 +16,43 @@ export type Database = {
     Tables: {
       exercises: {
         Row: {
-          id: number
-          images: string[]
-          muscle_hit: string[]
+          body_part: string | null
+          category: string | null
+          description: string | null
+          difficulty: string | null
+          equipment: string | null
+          id: string
+          image: string | null
+          instructions: string[] | null
           name: string
+          secondary_muscles: string[] | null
+          target: string | null
         }
         Insert: {
-          id: number
-          images?: string[]
-          muscle_hit?: string[]
+          body_part?: string | null
+          category?: string | null
+          description?: string | null
+          difficulty?: string | null
+          equipment?: string | null
+          id: string
+          image?: string | null
+          instructions?: string[] | null
           name: string
+          secondary_muscles?: string[] | null
+          target?: string | null
         }
         Update: {
-          id?: number
-          images?: string[]
-          muscle_hit?: string[]
+          body_part?: string | null
+          category?: string | null
+          description?: string | null
+          difficulty?: string | null
+          equipment?: string | null
+          id?: string
+          image?: string | null
+          instructions?: string[] | null
           name?: string
+          secondary_muscles?: string[] | null
+          target?: string | null
         }
         Relationships: []
       }
