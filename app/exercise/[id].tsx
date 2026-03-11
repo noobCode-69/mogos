@@ -145,17 +145,12 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: 10,
-    paddingTop: 10,
+    // paddingTop: 8,
   },
   sectionLabel: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#25141f",
-  },
-  sectionText: {
-    fontSize: 14,
-    color: "#5a4a53",
-    lineHeight: 21,
+    color: "black",
   },
   instructionRow: {
     flexDirection: "row",
@@ -164,13 +159,13 @@ const styles = StyleSheet.create({
   bullet: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#5a4a53",
+    color: "grey",
     lineHeight: 21,
   },
   instructionStep: {
     flex: 1,
     fontSize: 14,
-    color: "#5a4a53",
+    color: "grey",
     lineHeight: 21,
   },
   addButton: {
@@ -182,7 +177,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   addButtonText: {
-    color: "#fff",
+    color: "white",
     fontSize: 16,
     fontWeight: "700",
   },
