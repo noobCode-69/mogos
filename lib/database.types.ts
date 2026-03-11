@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      exercises: {
+        Row: {
+          id: number
+          images: string[]
+          muscle_hit: string[]
+          name: string
+        }
+        Insert: {
+          id: number
+          images?: string[]
+          muscle_hit?: string[]
+          name: string
+        }
+        Update: {
+          id?: number
+          images?: string[]
+          muscle_hit?: string[]
+          name?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string

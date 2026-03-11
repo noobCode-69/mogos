@@ -1,13 +1,61 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDebounce } from "../hooks/useDebounce";
+import { supabase } from "../lib/supabase";
+
+type Exercise = {
+  id: number;
+  name: string;
+  muscle_hit: string[];
+  images: string[];
+};
+
+const fetchExercises = async (search: string) => {
+  let query = supabase.from("exercises").select("*").order("name").limit(50);
+
+  if (search.trim()) {
+    query = query.ilike("name", `%${search.trim()}%`);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data as Exercise[];
+};
 
 export default function AddWorkout() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
+  const debouncedSearch = useDebounce(searchText, 300);
+
+  const { data: exercises = [], isLoading } = useQuery({
+    queryKey: ["exercises", debouncedSearch],
+    queryFn: () => fetchExercises(debouncedSearch),
+  });
+
+  const renderExercise = ({ item }: { item: Exercise }) => (
+    <Pressable
+      style={({ pressed }) => [
+        styles.exerciseItem,
+        { opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      <Text style={styles.exerciseName}>{item.name}</Text>
+      <Text style={styles.muscleTag}>{item.muscle_hit.join(", ")}</Text>
+    </Pressable>
+  );
 
   return (
     <LinearGradient
@@ -39,6 +87,25 @@ export default function AddWorkout() {
             style={styles.searchInput}
           />
         </View>
+
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="#e75480"
+            style={{ marginTop: 40 }}
+          />
+        ) : (
+          <FlatList
+            data={exercises}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderExercise}
+            contentContainerStyle={styles.list}
+            keyboardShouldPersistTaps="handled"
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No exercises found</Text>
+            }
+          />
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -74,5 +141,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 15,
     color: "#25141f",
+  },
+  list: {
+    paddingBottom: 40,
+  },
+  exerciseItem: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 8,
+  },
+  exerciseName: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#25141f",
+  },
+  muscleTag: {
+    fontSize: 13,
+    color: "#8d7b87",
+    marginTop: 4,
+  },
+  emptyText: {
+    textAlign: "center",
+    color: "#8d7b87",
+    fontSize: 15,
+    marginTop: 40,
   },
 });
