@@ -14,42 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
-      exercises: {
+      exercise: {
         Row: {
-          body_part: string | null
-          category: string | null
-          description: string | null
-          difficulty: string | null
-          equipment: string | null
-          id: string
-          image: string | null
-          instructions: string[] | null
+          id: number
           name: string
           secondary_muscles: string[] | null
           target: string | null
         }
         Insert: {
-          body_part?: string | null
-          category?: string | null
-          description?: string | null
-          difficulty?: string | null
-          equipment?: string | null
-          id: string
-          image?: string | null
-          instructions?: string[] | null
+          id?: never
           name: string
           secondary_muscles?: string[] | null
           target?: string | null
         }
         Update: {
-          body_part?: string | null
-          category?: string | null
-          description?: string | null
-          difficulty?: string | null
-          equipment?: string | null
-          id?: string
-          image?: string | null
-          instructions?: string[] | null
+          id?: never
           name?: string
           secondary_muscles?: string[] | null
           target?: string | null
