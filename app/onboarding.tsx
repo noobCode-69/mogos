@@ -1,17 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-} from "react-native";
+import { useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Circle, Text, View, XStack, YStack } from "tamagui";
+import {
+  Button,
+  Circle,
+  Input,
+  ScrollView,
+  Spinner,
+  Text,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
 import { supabase } from "../lib/supabase";
 
 type Step = {
@@ -144,7 +147,6 @@ function NumberInput({
   unitToggle?: [string, string];
   onChangeValue: (text: string) => void;
 }) {
-  const inputRef = useRef<TextInput>(null);
   const [unit, setUnit] = useState(unitToggle?.[0]);
 
   function toggleUnit() {
@@ -155,15 +157,14 @@ function NumberInput({
   return (
     <YStack marginTop={20}>
       <XStack alignItems="center" gap={12}>
-        <TextInput
-          ref={inputRef}
-          style={{
-            fontSize: 48,
-            fontWeight: "600",
-            color: "#000",
-            flex: 1,
-            paddingVertical: 8,
-          }}
+        <Input
+          flex={1}
+          fontSize={48}
+          fontWeight="600"
+          color="#000"
+          paddingVertical={8}
+          borderWidth={0}
+          backgroundColor="transparent"
           value={value}
           onChangeText={(text) => onChangeValue(text.replace(/[^0-9.]/g, ""))}
           keyboardType="decimal-pad"
@@ -363,7 +364,7 @@ export default function Onboarding() {
         </View>
 
         <ScrollView
-          style={{ flex: 1 }}
+          flex={1}
           contentContainerStyle={{
             paddingHorizontal: 24,
             paddingTop: 24,
@@ -440,7 +441,7 @@ export default function Onboarding() {
             pressStyle={{ opacity: 0.8 }}
           >
             {saving ? (
-              <ActivityIndicator color="#fff" />
+              <Spinner color="#fff" size="small" />
             ) : (
               <Text fontSize={17} fontWeight="700" color="#fff">
                 Continue

@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
-import { Pressable } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -68,7 +67,15 @@ export default function GymTrack() {
           </View>
         )}
 
-        <Pressable
+        <Circle
+          size={50}
+          backgroundColor="#c11c84"
+          position="absolute"
+          right={20}
+          bottom={insets.bottom + 16}
+          alignItems="center"
+          justifyContent="center"
+          pressStyle={{ opacity: 0.8 }}
           onPressIn={() => {
             longPressTriggered.current = false;
           }}
@@ -81,21 +88,9 @@ export default function GymTrack() {
               setPopups([Date.now()]);
             }
           }}
-          delayLongPress={500}
-          style={{
-            position: "absolute",
-            right: 20,
-            bottom: insets.bottom + 16,
-            width: 50,
-            height: 50,
-            backgroundColor: "#c11c84",
-            borderRadius: 25,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
         >
           <Ionicons name="add" size={28} color="#fff" />
-        </Pressable>
+        </Circle>
       </SafeAreaView>
     </LinearGradient>
   );

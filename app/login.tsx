@@ -4,9 +4,9 @@ import { makeRedirectUri } from "expo-auth-session";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { ActivityIndicator, Alert } from "react-native";
+import { Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Text, View, XStack, YStack } from "tamagui";
+import { Button, Spinner, Text, View, XStack, YStack } from "tamagui";
 import { supabase } from "../lib/supabase";
 const redirectTo = makeRedirectUri();
 
@@ -87,7 +87,7 @@ export default function Login() {
         >
           <XStack alignItems="center" justifyContent="center">
             {loading ? (
-              <ActivityIndicator color="#fff" style={{ marginRight: 8 }} />
+              <Spinner color="#fff" size="small" marginRight={8} />
             ) : (
               <Ionicons
                 name="logo-google"

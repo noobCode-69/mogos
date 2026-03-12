@@ -1,9 +1,10 @@
+import "@tamagui/native/setup-zeego";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 
 import { defaultConfig } from "@tamagui/config/v5";
 import { createTamagui, TamaguiProvider } from "@tamagui/core";
-import "@tamagui/native/setup-zeego";
+
 const config = createTamagui(defaultConfig);
 
 const queryClient = new QueryClient();
