@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { StyleSheet, View } from "react-native";
-import { IconButton } from "react-native-paper";
+import { Circle, View, XStack } from "tamagui";
 import { fetchUser } from "../lib/fetchUser";
 import ProfileButton from "./ProfileButton";
 
@@ -15,34 +15,22 @@ export default function Header({ left }: HeaderProps) {
   });
 
   return (
-    <View style={styles.topBar}>
-      <View style={styles.leftSection}>{left}</View>
-      <IconButton
-        icon="bell-outline"
-        size={20}
+    <XStack alignItems="center" height={60}>
+      <View flex={1}>{left}</View>
+      <Circle
+        size={40}
+        backgroundColor="#fff"
+        alignItems="center"
+        justifyContent="center"
+        marginRight={2}
+        pressStyle={{ opacity: 0.7 }}
         onPress={() => {}}
-        style={styles.notificationButton}
-        iconColor="#000"
-      />
+      >
+        <Ionicons name="notifications-outline" size={20} color="#000" />
+      </Circle>
       {data?.profile_picture && (
         <ProfileButton profilePicture={data.profile_picture as string} />
       )}
-    </View>
+    </XStack>
   );
 }
-
-const styles = StyleSheet.create({
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 60,
-  },
-  leftSection: {
-    flex: 1,
-  },
-  notificationButton: {
-    backgroundColor: "#fff",
-    borderRadius: 10000000,
-    marginRight: 2,
-  },
-});

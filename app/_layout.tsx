@@ -1,6 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { PaperProvider } from "react-native-paper";
+
+import { defaultConfig } from "@tamagui/config/v5";
+import { createTamagui, TamaguiProvider } from "@tamagui/core";
+import "@tamagui/native/setup-zeego";
+const config = createTamagui(defaultConfig);
 
 const queryClient = new QueryClient();
 
@@ -17,10 +21,10 @@ function AuthGate() {
 
 export default function RootLayout() {
   return (
-    <PaperProvider>
+    <TamaguiProvider config={config} defaultTheme="light">
       <QueryClientProvider client={queryClient}>
         <AuthGate />
       </QueryClientProvider>
-    </PaperProvider>
+    </TamaguiProvider>
   );
 }

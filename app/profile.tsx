@@ -1,50 +1,33 @@
+import { Ionicons } from "@expo/vector-icons";
+
+import { Circle, Text, YStack } from "tamagui";
+
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { IconButton, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <IconButton
-          icon="arrow-left"
-          size={22}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <YStack flex={1} paddingHorizontal={24}>
+        <Circle
+          size={40}
+          marginLeft={-8}
+          alignItems="center"
+          justifyContent="center"
+          pressStyle={{ opacity: 0.7 }}
           onPress={() => router.back()}
-          style={styles.backButton}
-          iconColor="#666"
-        />
-        <Text variant="headlineLarge" style={styles.heading}>
+        >
+          <Ionicons name="arrow-back" size={22} color="#666" />
+        </Circle>
+        <Text fontWeight="700" color="#000" marginBottom={12} fontSize={28}>
           Profile
         </Text>
-        <Text variant="bodyLarge" style={styles.placeholder}>
+        <Text color="#888" fontSize={16}>
           Profile page coming soon.
         </Text>
-      </View>
+      </YStack>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  backButton: {
-    marginLeft: -8,
-  },
-  heading: {
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 12,
-  },
-  placeholder: {
-    color: "#888",
-  },
-});

@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
-import { Avatar, TouchableRipple } from "react-native-paper";
+import { Image } from "react-native";
+import { Circle } from "tamagui";
 
 interface ProfileButtonProps {
   profilePicture: string;
@@ -10,20 +10,16 @@ export default function ProfileButton({ profilePicture }: ProfileButtonProps) {
   const router = useRouter();
 
   return (
-    <TouchableRipple
+    <Circle
+      size={40}
+      overflow="hidden"
+      pressStyle={{ opacity: 0.7 }}
       onPress={() => router.push("/profile")}
-      borderless
-      style={styles.button}
-      rippleColor="rgba(0, 0, 0, 0.1)"
     >
-      <Avatar.Image source={{ uri: profilePicture }} size={40} />
-    </TouchableRipple>
+      <Image
+        source={{ uri: profilePicture }}
+        style={{ width: 40, height: 40, borderRadius: 20 }}
+      />
+    </Circle>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 10000000,
-    overflow: "hidden",
-  },
-});

@@ -4,9 +4,9 @@ import { makeRedirectUri } from "expo-auth-session";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Text, View, XStack, YStack } from "tamagui";
 import { supabase } from "../lib/supabase";
 const redirectTo = makeRedirectUri();
 
@@ -72,30 +72,49 @@ export default function Login() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.graphicPlaceholder} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View flex={1} margin={24} />
 
-      <View style={styles.footer}>
+      <YStack paddingHorizontal={24} paddingBottom={16} gap={12}>
         <Button
-          mode="contained"
           onPress={handleGooglePress}
-          loading={loading}
           disabled={loading}
-          icon={({ size, color }) => (
-            <Ionicons name="logo-google" size={size} color={color} />
-          )}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonLabel}
-          style={styles.googleButton}
+          backgroundColor="#000"
+          borderRadius={16}
+          height={56}
+          opacity={loading ? 0.6 : 1}
+          pressStyle={{ opacity: 0.8 }}
         >
-          {loading ? "Signing in..." : "Continue with Google"}
+          <XStack alignItems="center" justifyContent="center">
+            {loading ? (
+              <ActivityIndicator color="#fff" style={{ marginRight: 8 }} />
+            ) : (
+              <Ionicons
+                name="logo-google"
+                size={20}
+                color="#fff"
+                style={{ marginRight: 8 }}
+              />
+            )}
+            <Text fontSize={17} fontWeight="700" color="#fff">
+              {loading ? "Signing in..." : "Continue with Google"}
+            </Text>
+          </XStack>
         </Button>
 
-        <Text variant="bodySmall" style={styles.termsText}>
+        <Text
+          color="#999"
+          textAlign="center"
+          lineHeight={18}
+          marginTop={4}
+          paddingHorizontal={16}
+          fontSize={12}
+        >
           By continuing, you agree to our{" "}
           <Text
-            variant="bodySmall"
-            style={styles.termsLink}
+            textDecorationLine="underline"
+            color="#999"
+            fontSize={12}
             onPress={() =>
               WebBrowser.openBrowserAsync("https://example.com/terms")
             }
@@ -104,43 +123,7 @@ export default function Login() {
           </Text>
           .
         </Text>
-      </View>
+      </YStack>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  graphicPlaceholder: {
-    flex: 1,
-    margin: 24,
-  },
-  footer: {
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-    gap: 12,
-  },
-  googleButton: {
-    borderRadius: 16,
-  },
-  buttonContent: {
-    paddingVertical: 10,
-  },
-  buttonLabel: {
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  termsText: {
-    color: "#999",
-    textAlign: "center",
-    lineHeight: 18,
-    marginTop: 4,
-    paddingHorizontal: 16,
-  },
-  termsLink: {
-    textDecorationLine: "underline",
-    color: "#999",
-  },
-});

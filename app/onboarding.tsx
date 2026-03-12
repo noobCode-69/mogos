@@ -3,23 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   TextInput,
-  View,
 } from "react-native";
-import {
-  Button,
-  Chip,
-  IconButton,
-  ProgressBar,
-  Text,
-  TextInput as PaperInput,
-} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button, Circle, Text, View, XStack, YStack } from "tamagui";
 import { supabase } from "../lib/supabase";
 
 type Step = {
@@ -161,11 +153,17 @@ function NumberInput({
   }
 
   return (
-    <View style={styles.numberInputArea}>
-      <View style={styles.inputRow}>
+    <YStack marginTop={20}>
+      <XStack alignItems="center" gap={12}>
         <TextInput
           ref={inputRef}
-          style={styles.numberInput}
+          style={{
+            fontSize: 48,
+            fontWeight: "600",
+            color: "#000",
+            flex: 1,
+            paddingVertical: 8,
+          }}
           value={value}
           onChangeText={(text) => onChangeValue(text.replace(/[^0-9.]/g, ""))}
           keyboardType="decimal-pad"
@@ -174,21 +172,26 @@ function NumberInput({
           autoFocus
         />
         {unitToggle && (
-          <Chip
-            mode="flat"
+          <Button
             onPress={toggleUnit}
-            style={styles.unitChip}
-            textStyle={styles.unitChipText}
-            icon={() => (
-              <Ionicons name="chevron-down" size={14} color="#666" />
-            )}
+            backgroundColor="#F2F2F2"
+            borderRadius={20}
+            paddingHorizontal={14}
+            paddingVertical={8}
+            unstyled
+            pressStyle={{ opacity: 0.7 }}
           >
-            {unit}
-          </Chip>
+            <XStack alignItems="center" gap={4}>
+              <Text fontSize={16} fontWeight="600" color="#333">
+                {unit}
+              </Text>
+              <Ionicons name="chevron-down" size={14} color="#666" />
+            </XStack>
+          </Button>
         )}
-      </View>
-      <View style={styles.inputUnderline} />
-    </View>
+      </XStack>
+      <View height={2} backgroundColor="#000" marginTop={4} />
+    </YStack>
   );
 }
 
@@ -202,25 +205,33 @@ function SelectInput({
   onSelect: (option: string) => void;
 }) {
   return (
-    <View style={styles.optionsArea}>
+    <YStack gap={12}>
       {options.map((option) => {
         const isSelected = selected === option;
         return (
           <Button
             key={option}
-            mode={isSelected ? "contained" : "elevated"}
             onPress={() => onSelect(option)}
-            buttonColor={isSelected ? "#000" : "#F5F5F5"}
-            textColor={isSelected ? "#fff" : "#000"}
-            contentStyle={styles.optionContent}
-            labelStyle={styles.optionLabel}
-            style={styles.optionButton}
+            backgroundColor={isSelected ? "#000" : "#F5F5F5"}
+            borderRadius={16}
+            height={52}
+            pressStyle={{ opacity: 0.8 }}
+            unstyled
+            alignItems="center"
+            justifyContent="center"
+            paddingVertical={16}
           >
-            {option}
+            <Text
+              fontSize={16}
+              fontWeight="600"
+              color={isSelected ? "#fff" : "#000"}
+            >
+              {option}
+            </Text>
           </Button>
         );
       })}
-    </View>
+    </YStack>
   );
 }
 
@@ -234,25 +245,33 @@ function MultiSelectInput({
   onToggle: (option: string) => void;
 }) {
   return (
-    <View style={styles.optionsArea}>
+    <YStack gap={12}>
       {options.map((option) => {
         const isSelected = selected.includes(option);
         return (
           <Button
             key={option}
-            mode={isSelected ? "contained" : "elevated"}
             onPress={() => onToggle(option)}
-            buttonColor={isSelected ? "#000" : "#F5F5F5"}
-            textColor={isSelected ? "#fff" : "#000"}
-            contentStyle={styles.optionContent}
-            labelStyle={styles.optionLabel}
-            style={styles.optionButton}
+            backgroundColor={isSelected ? "#000" : "#F5F5F5"}
+            borderRadius={16}
+            height={52}
+            pressStyle={{ opacity: 0.8 }}
+            unstyled
+            alignItems="center"
+            justifyContent="center"
+            paddingVertical={16}
           >
-            {option}
+            <Text
+              fontSize={16}
+              fontWeight="600"
+              color={isSelected ? "#fff" : "#000"}
+            >
+              {option}
+            </Text>
           </Button>
         );
       })}
-    </View>
+    </YStack>
   );
 }
 
@@ -322,29 +341,41 @@ export default function Onboarding() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        style={{ flex: 1 }}
       >
-        <View style={styles.header}>
-          <ProgressBar
-            progress={progress}
-            color="#000"
-            style={styles.progressBar}
-          />
+        <View paddingHorizontal={24} paddingTop={12} paddingBottom={8}>
+          <View
+            height={4}
+            borderRadius={2}
+            backgroundColor="#E8E8E8"
+            overflow="hidden"
+          >
+            <View
+              height={4}
+              borderRadius={2}
+              backgroundColor="#000"
+              width={`${progress * 100}%` as any}
+            />
+          </View>
         </View>
 
         <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.content}
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingTop: 24,
+            flexGrow: 1,
+          }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text variant="headlineLarge" style={styles.heading}>
+          <Text fontWeight="700" color="#000" marginBottom={12} fontSize={28}>
             {step.heading}
           </Text>
-          <Text variant="bodyLarge" style={styles.description}>
+          <Text color="#666" marginBottom={40} fontSize={16}>
             {step.description}
           </Text>
 
@@ -382,135 +413,42 @@ export default function Onboarding() {
           )}
         </ScrollView>
 
-        <View style={styles.footer}>
+        <XStack paddingHorizontal={24} paddingBottom={8} paddingTop={8} gap={8}>
           {currentStep > 0 && (
-            <IconButton
-              icon="arrow-left"
-              mode="outlined"
-              size={22}
+            <Circle
+              size={56}
+              borderRadius={16}
+              borderColor="#1A1A2E"
+              borderWidth={1.5}
+              alignItems="center"
+              justifyContent="center"
+              pressStyle={{ opacity: 0.7 }}
               onPress={() => setCurrentStep(currentStep - 1)}
-              style={styles.prevButton}
-              iconColor="#1A1A2E"
-            />
+            >
+              <Ionicons name="arrow-back" size={22} color="#1A1A2E" />
+            </Circle>
           )}
 
           <Button
-            mode="contained"
             onPress={handleNext}
             disabled={!canContinue || saving}
-            loading={saving}
-            buttonColor="#1A1A2E"
-            textColor="#fff"
-            contentStyle={styles.continueContent}
-            labelStyle={styles.continueLabel}
-            style={styles.continueButton}
+            flex={1}
+            borderRadius={16}
+            backgroundColor="#1A1A2E"
+            height={56}
+            opacity={!canContinue || saving ? 0.5 : 1}
+            pressStyle={{ opacity: 0.8 }}
           >
-            {saving ? "Loading..." : "Continue"}
+            {saving ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text fontSize={17} fontWeight="700" color="#fff">
+                Continue
+              </Text>
+            )}
           </Button>
-        </View>
+        </XStack>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  flex: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  progressBar: {
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#E8E8E8",
-  },
-  content: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    flexGrow: 1,
-  },
-  heading: {
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 12,
-  },
-  description: {
-    color: "#666",
-    marginBottom: 40,
-  },
-  numberInputArea: {
-    marginTop: 20,
-  },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  numberInput: {
-    fontSize: 48,
-    fontWeight: "600",
-    color: "#000",
-    flex: 1,
-    paddingVertical: 8,
-  },
-  unitChip: {
-    backgroundColor: "#F2F2F2",
-    borderRadius: 20,
-  },
-  unitChipText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-  },
-  inputUnderline: {
-    height: 2,
-    backgroundColor: "#000",
-    marginTop: 4,
-  },
-  optionsArea: {
-    gap: 12,
-  },
-  optionButton: {
-    borderRadius: 16,
-    elevation: 0,
-  },
-  optionContent: {
-    paddingVertical: 10,
-  },
-  optionLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  footer: {
-    flexDirection: "row",
-    paddingHorizontal: 24,
-    paddingBottom: 8,
-    paddingTop: 8,
-    gap: 8,
-  },
-  prevButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    borderColor: "#1A1A2E",
-    borderWidth: 1.5,
-  },
-  continueButton: {
-    flex: 1,
-    borderRadius: 16,
-  },
-  continueContent: {
-    paddingVertical: 10,
-  },
-  continueLabel: {
-    fontSize: 17,
-    fontWeight: "700",
-  },
-});
