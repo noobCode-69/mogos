@@ -1,20 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { Circle, Text, View, YStack } from "tamagui";
+import { Circle, Text, View, XStack, YStack } from "tamagui";
 import Header from "../components/Header";
 
 export default function GymTrack() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [popups, setPopups] = useState<number[]>([]);
-  const longPressTriggered = useRef(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <LinearGradient
@@ -39,58 +38,69 @@ export default function GymTrack() {
           }
         />
 
-        {popups.length > 0 && (
-          <View position="absolute" bottom={90} left={15} right={15}>
-            {popups.map((id, index) => (
-              <YStack
-                key={id}
-                width="100%"
-                height={200}
-                backgroundColor="#fff"
-                borderRadius={16}
-                padding={20}
-                marginBottom={10}
-              >
-                <Text
-                  fontSize={18}
-                  fontWeight="700"
-                  color="#c11c84"
-                  marginBottom={6}
-                >
-                  Workout {index + 1}
-                </Text>
-                <Text fontSize={14} color="#888">
-                  Add your workout details here
-                </Text>
-              </YStack>
-            ))}
-          </View>
-        )}
+        {isOpen ? (
+          <YStack
+            position="absolute"
+            bottom={insets.bottom + 16}
+            left={15}
+            right={15}
+            height={200}
+            backgroundColor="#fff"
+            borderRadius={16}
+            padding={20}
+          >
+            <Text
+              fontSize={18}
+              fontWeight="700"
+              color="#c11c84"
+              marginBottom={6}
+            >
+              New Workout
+            </Text>
+            <Text fontSize={14} color="#888">
+              Add your workout details here
+            </Text>
 
-        <Circle
-          size={50}
-          backgroundColor="#c11c84"
-          position="absolute"
-          right={20}
-          bottom={insets.bottom + 16}
-          alignItems="center"
-          justifyContent="center"
-          pressStyle={{ opacity: 0.8 }}
-          onPressIn={() => {
-            longPressTriggered.current = false;
-          }}
-          onLongPress={() => {
-            longPressTriggered.current = true;
-            setPopups((prev) => [...prev, Date.now()]);
-          }}
-          onPress={() => {
-            if (!longPressTriggered.current) {
-              setPopups([Date.now()]);
-            }
-          }}
-        >
-          <Ionicons name="add" size={28} color="#fff" />
-        </Circle>
+            <XStack position="absolute" right={15} bottom={15} gap={10}>
+              <Circle
+                size={50}
+                backgroundColor="#eee"
+                alignItems="center"
+                justifyContent="center"
+                pressStyle={{ opacity: 0.8 }}
+                onPress={() => setIsOpen(false)}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </Circle>
+              <Circle
+                size={50}
+                backgroundColor="#c11c84"
+                alignItems="center"
+                justifyContent="center"
+                pressStyle={{ opacity: 0.8 }}
+                onPress={() => {
+                  // send action here
+                }}
+              >
+                <Ionicons name="send" size={22} color="#fff" />
+              </Circle>
+            </XStack>
+          </YStack>
+        ) : (
+          <Circle
+            size={50}
+            backgroundColor="#c11c84"
+            position="absolute"
+            right={30}
+            bottom={insets.bottom + 31}
+            alignItems="center"
+            justifyContent="center"
+            pressStyle={{ opacity: 0.8 }}
+            onPress={() => setIsOpen(true)}
+          >
+            <Ionicons name="add" size={28} color="#fff" />
+          </Circle>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
