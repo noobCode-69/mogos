@@ -1,19 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Pressable } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { Circle, Text, View, XStack, YStack } from "tamagui";
+import { Circle, Text, XStack, YStack } from "tamagui";
 import Header from "../components/Header";
+
+type PopupState = "closed" | "tap" | "holding" | "released";
 
 export default function GymTrack() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [state, setState] = useState<PopupState>("closed");
+  const longPressTriggered = useRef(false);
 
   return (
     <LinearGradient
@@ -38,7 +43,7 @@ export default function GymTrack() {
           }
         />
 
-        {isOpen ? (
+        {state === "tap" && (
           <YStack
             position="absolute"
             bottom={insets.bottom + 16}
@@ -68,7 +73,7 @@ export default function GymTrack() {
                 alignItems="center"
                 justifyContent="center"
                 pressStyle={{ opacity: 0.8 }}
-                onPress={() => setIsOpen(false)}
+                onPress={() => setState("closed")}
               >
                 <Ionicons name="close" size={24} color="#666" />
               </Circle>
@@ -78,28 +83,101 @@ export default function GymTrack() {
                 alignItems="center"
                 justifyContent="center"
                 pressStyle={{ opacity: 0.8 }}
-                onPress={() => {
-                  // send action here
-                }}
+                onPress={() => {}}
               >
                 <Ionicons name="send" size={22} color="#fff" />
               </Circle>
             </XStack>
           </YStack>
-        ) : (
-          <Circle
-            size={50}
-            backgroundColor="#c11c84"
+        )}
+
+        {(state === "holding" || state === "released") && (
+          <YStack
             position="absolute"
-            right={30}
-            bottom={insets.bottom + 31}
-            alignItems="center"
-            justifyContent="center"
-            pressStyle={{ opacity: 0.8 }}
-            onPress={() => setIsOpen(true)}
+            bottom={insets.bottom + 16}
+            left={15}
+            right={15}
+            height={200}
+            backgroundColor="#fff"
+            borderRadius={16}
+            padding={20}
           >
-            <Ionicons name="add" size={28} color="#fff" />
-          </Circle>
+            <Text
+              fontSize={18}
+              fontWeight="700"
+              color="#c11c84"
+              marginBottom={6}
+            >
+              {state === "holding" ? "Holding..." : "Not Holding"}
+            </Text>
+
+            {state === "released" && (
+              <XStack position="absolute" right={15} bottom={15} gap={10}>
+                <Circle
+                  size={50}
+                  backgroundColor="#eee"
+                  alignItems="center"
+                  justifyContent="center"
+                  pressStyle={{ opacity: 0.8 }}
+                  onPress={() => setState("closed")}
+                >
+                  <Ionicons name="close" size={24} color="#666" />
+                </Circle>
+                <Circle
+                  size={50}
+                  backgroundColor="#c11c84"
+                  alignItems="center"
+                  justifyContent="center"
+                  pressStyle={{ opacity: 0.8 }}
+                  onPress={() => {}}
+                >
+                  <Ionicons name="send" size={22} color="#fff" />
+                </Circle>
+              </XStack>
+            )}
+          </YStack>
+        )}
+
+        {(state === "closed" || state === "holding") && (
+          <Pressable
+            onPressIn={() => {
+              longPressTriggered.current = false;
+            }}
+            onLongPress={() => {
+              longPressTriggered.current = true;
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+              setState("holding");
+            }}
+            onPressOut={() => {
+              if (longPressTriggered.current) {
+                setState("released");
+              }
+            }}
+            onPress={() => {
+              if (!longPressTriggered.current) {
+                setState("tap");
+              }
+            }}
+            delayLongPress={500}
+            style={{
+              position: "absolute",
+              right: 30,
+              bottom: insets.bottom + 31,
+              width: 50,
+              height: 50,
+              backgroundColor: "#c11c84",
+              borderRadius: 25,
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10,
+            }}
+          >
+            <Ionicons
+              name={state === "holding" ? "ellipsis-horizontal" : "add"}
+              size={state === "holding" ? 24 : 28}
+              color="#fff"
+            />
+          </Pressable>
         )}
       </SafeAreaView>
     </LinearGradient>
