@@ -13,6 +13,109 @@ import Header from "../components/Header";
 
 type PopupState = "closed" | "tap" | "holding" | "released";
 
+function TapModal({
+  bottom,
+  onClose,
+}: {
+  bottom: number;
+  onClose: () => void;
+}) {
+  return (
+    <YStack
+      position="absolute"
+      bottom={bottom}
+      left={15}
+      right={15}
+      height={200}
+      backgroundColor="#fff"
+      borderRadius={16}
+      padding={20}
+    >
+      <Text fontSize={18} fontWeight="700" color="#c11c84" marginBottom={6}>
+        New Workout
+      </Text>
+      <Text fontSize={14} color="#888">
+        Add your workout details here
+      </Text>
+
+      <XStack position="absolute" right={15} bottom={15} gap={10}>
+        <Circle
+          size={50}
+          backgroundColor="#eee"
+          alignItems="center"
+          justifyContent="center"
+          pressStyle={{ opacity: 0.8 }}
+          onPress={onClose}
+        >
+          <Ionicons name="close" size={24} color="#666" />
+        </Circle>
+        <Circle
+          size={50}
+          backgroundColor="#c11c84"
+          alignItems="center"
+          justifyContent="center"
+          pressStyle={{ opacity: 0.8 }}
+          onPress={() => {}}
+        >
+          <Ionicons name="send" size={22} color="#fff" />
+        </Circle>
+      </XStack>
+    </YStack>
+  );
+}
+
+function HoldModal({
+  bottom,
+  state,
+  onClose,
+}: {
+  bottom: number;
+  state: "holding" | "released";
+  onClose: () => void;
+}) {
+  return (
+    <YStack
+      position="absolute"
+      bottom={bottom}
+      left={15}
+      right={15}
+      height={200}
+      backgroundColor="#fff"
+      borderRadius={16}
+      padding={20}
+    >
+      <Text fontSize={18} fontWeight="700" color="#c11c84" marginBottom={6}>
+        {state === "holding" ? "Holding..." : "Not Holding"}
+      </Text>
+
+      {state === "released" && (
+        <XStack position="absolute" right={15} bottom={15} gap={10}>
+          <Circle
+            size={50}
+            backgroundColor="#eee"
+            alignItems="center"
+            justifyContent="center"
+            pressStyle={{ opacity: 0.8 }}
+            onPress={onClose}
+          >
+            <Ionicons name="close" size={24} color="#666" />
+          </Circle>
+          <Circle
+            size={50}
+            backgroundColor="#c11c84"
+            alignItems="center"
+            justifyContent="center"
+            pressStyle={{ opacity: 0.8 }}
+            onPress={() => {}}
+          >
+            <Ionicons name="send" size={22} color="#fff" />
+          </Circle>
+        </XStack>
+      )}
+    </YStack>
+  );
+}
+
 export default function GymTrack() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -44,98 +147,18 @@ export default function GymTrack() {
         />
 
         {state === "tap" && (
-          <YStack
-            position="absolute"
+          <TapModal
             bottom={insets.bottom + 16}
-            left={15}
-            right={15}
-            height={200}
-            backgroundColor="#fff"
-            borderRadius={16}
-            padding={20}
-          >
-            <Text
-              fontSize={18}
-              fontWeight="700"
-              color="#c11c84"
-              marginBottom={6}
-            >
-              New Workout
-            </Text>
-            <Text fontSize={14} color="#888">
-              Add your workout details here
-            </Text>
-
-            <XStack position="absolute" right={15} bottom={15} gap={10}>
-              <Circle
-                size={50}
-                backgroundColor="#eee"
-                alignItems="center"
-                justifyContent="center"
-                pressStyle={{ opacity: 0.8 }}
-                onPress={() => setState("closed")}
-              >
-                <Ionicons name="close" size={24} color="#666" />
-              </Circle>
-              <Circle
-                size={50}
-                backgroundColor="#c11c84"
-                alignItems="center"
-                justifyContent="center"
-                pressStyle={{ opacity: 0.8 }}
-                onPress={() => {}}
-              >
-                <Ionicons name="send" size={22} color="#fff" />
-              </Circle>
-            </XStack>
-          </YStack>
+            onClose={() => setState("closed")}
+          />
         )}
 
         {(state === "holding" || state === "released") && (
-          <YStack
-            position="absolute"
+          <HoldModal
             bottom={insets.bottom + 16}
-            left={15}
-            right={15}
-            height={200}
-            backgroundColor="#fff"
-            borderRadius={16}
-            padding={20}
-          >
-            <Text
-              fontSize={18}
-              fontWeight="700"
-              color="#c11c84"
-              marginBottom={6}
-            >
-              {state === "holding" ? "Holding..." : "Not Holding"}
-            </Text>
-
-            {state === "released" && (
-              <XStack position="absolute" right={15} bottom={15} gap={10}>
-                <Circle
-                  size={50}
-                  backgroundColor="#eee"
-                  alignItems="center"
-                  justifyContent="center"
-                  pressStyle={{ opacity: 0.8 }}
-                  onPress={() => setState("closed")}
-                >
-                  <Ionicons name="close" size={24} color="#666" />
-                </Circle>
-                <Circle
-                  size={50}
-                  backgroundColor="#c11c84"
-                  alignItems="center"
-                  justifyContent="center"
-                  pressStyle={{ opacity: 0.8 }}
-                  onPress={() => {}}
-                >
-                  <Ionicons name="send" size={22} color="#fff" />
-                </Circle>
-              </XStack>
-            )}
-          </YStack>
+            state={state}
+            onClose={() => setState("closed")}
+          />
         )}
 
         {(state === "closed" || state === "holding") && (
